@@ -1,14 +1,6 @@
 import { Link } from 'react-router-dom'
 
-import {
-  GPAUDIT_LINK,
-  COWWIKI_LINK,
-  GNOSIS_FORUM_ROADTODECENT_LINK,
-  FLASHBOYS_LINK,
-  DISCORD_LINK,
-  MEV_TOTAL,
-  FLASHBOTS_LINK,
-} from 'legacy/constants'
+import { GPAUDIT_LINK, COWWIKI_LINK, FLASHBOYS_LINK, DISCORD_LINK, MEV_TOTAL, FLASHBOTS_LINK } from 'legacy/constants'
 import { Page, Content } from 'modules/application/pure/Page'
 import { Routes } from 'constants/routes'
 import { ExternalLinkFaq, Wrapper, ButtonNav, FooterWrapper } from './styled'
