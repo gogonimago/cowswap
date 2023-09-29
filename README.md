@@ -22,19 +22,21 @@ Please see the:
 
 You can block an entire list of tokens by passing in a tokenlist like [here](apps/cowswap-frontend/src/constants/lists.ts) or you can block specific tokens by adding them to [unsupported.tokenlist.json](apps/cowswap-frontend/src/constants/tokenLists/unsupported.tokenlist.json).
 
-### Install Dependencies
+# Development
+
+## Install Dependencies
 
 ```bash
 yarn
 ```
 
-### Run
+## Run
 
 ```bash
 yarn start
 ```
 
-### build
+## build
 
 ```bash
 yarn build
@@ -44,13 +46,13 @@ yarn build
 ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst yarn build
 ```
 
-### Unit testing
+## Unit testing
 
 ```bash
 yarn test
 ```
 
-### Integration test
+## Integration test
 
 > Make sure you add the required environment varianbles to your `.env.local` file with:
 >
@@ -79,7 +81,7 @@ yarn serve
 yarn cypress
 ```
 
-### Run cosmos
+## Run cosmos
 
 This will start a server on the `http://localhost:5000/`
 
@@ -96,53 +98,23 @@ yarn ui:build
 yarn ui:test
 ```
 
-## Configuring the environment
+# Sitemap
 
-The app has some default configuration, but it's highly encouraged to define your own.
+The sitemap can be found in <./public/sitemap.xml>
 
-### Local configuration
+To update its content:
+
+1. Edit the list of pages in <./src/sitemap.js>
+2. Run `yarn sitemap`
+3. Commit the changes to git
+
+# Configuration
+
+The app has some default configuration (in `.env` and `.env.prod` file), but it's highly encouraged to define your own `.env.local`.
 
 Make a copy of `.env` named `.env.local`, this will allow you to set your own configuration only in your local environment.
 
-#### What is the mandatory minimum to be able to run the application?
-
-Your environment MUST have the following variables defined:
-`REACT_APP_INFURA_KEY`=YOUR_INFURA_KEY
-`REACT_APP_NETWORK_URL_1`=https://mainnet.infura.io/v3/{YOUR_INFURA_KEY}
-`REACT_APP_NETWORK_URL_5`=https://goerli.infura.io/v3/{YOUR_INFURA_KEY}
-
-Additionally, to successfully run E2E / Integration tests locally you must have;
-`INTEGRATION_TESTS_INFURA_KEY`=YOUR_INFURA_KEY
-`INTEGRATION_TESTS_PRIVATE_KEY`=YOUR_TEST_WALLET_PRIVATE_KEY
-
-### Production configuration
-
-Modify the environment variables in `.env.production`, or override them in build time.
-
-### Price feeds
-
-CoW Swap tries to find the best price available on-chain using some price feeds.
-
-All price feeds are enabled by default, but they can be individually disabled by using an environment variable:
-
-| Name             | Environment variable                    | Type                         | Description                                                                           |
-| ---------------- | --------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------- |
-| **CoW Protocol** | `REACT_APP_PRICE_FEED_GP_ENABLED`       | `boolean` (default = `true`) | [CoW Protocol](https://docs.cow.fi/) price estimation. Used for all price estimation. |
-| **Paraswap**     | `REACT_APP_PRICE_FEED_PARASWAP_ENABLED` | `boolean` (default = `true`) | [Paraswap](https://paraswap.io/) price estimation. Used for all price estimations.    |
-| **1inch**        | `REACT_APP_PRICE_FEED_1INCH_ENABLED`    | `boolean` (default = `true`) | [Paraswap](https://1inch.exchange) price estimation. Used for all price estimations.  |
-| **0x**           | `REACT_APP_PRICE_FEED_0X_ENABLED`       | `boolean` (default = `true`) | [0x](https://0x.org/) price estimation. Used for all price estimation.                |
-
-### Metadata attached to orders (AppData)
-
-The app will attach some metadata to all orders.
-
-This metadata will be sent to the smart contract as a hexadecimal value in an order field called `AppData`. This value comes from hashing the content of a metadata JSON containing some information about the trade (using `keccak256` on the `UTF-8` bytes).
-
-The format of the JSON follows this typescript format: <src/utils/metadata.ts>
-
-To set your own `AppData`, change `REACT_APP_FULL_APP_DATA_<environment>` environment variable. For more details, check out the environment file (<.env>)
-
-### Supported networks
+## Supported networks (⚠️ Required)
 
 You should set your own RPC endpoints by defining the following environment variables:
 
@@ -160,44 +132,45 @@ If you plan to use Infura, you can omit defining the RPC endpoints, and just def
 REACT_APP_INFURA_KEY={YOUR_INFURA_KEY}
 ```
 
-````
+## Price feeds
 
-### API endpoints
+CoW Swap tries to find the best price available on-chain using some price feeds.
 
-Fee quote requests and posting orders are sent to an API. This API has the responsibility of collecting orders and
+All price feeds are enabled by default, but they can be individually disabled by using an environment variable:
+
+| Name             | Environment variable                    | Type                         | Description                                                                           |
+| ---------------- | --------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------- |
+| **CoW Protocol** | `REACT_APP_PRICE_FEED_GP_ENABLED`       | `boolean` (default = `true`) | [CoW Protocol](https://docs.cow.fi/) price estimation. Used for all price estimation. |
+| **Paraswap**     | `REACT_APP_PRICE_FEED_PARASWAP_ENABLED` | `boolean` (default = `true`) | [Paraswap](https://paraswap.io/) price estimation. Used for all price estimations.    |
+| **1inch**        | `REACT_APP_PRICE_FEED_1INCH_ENABLED`    | `boolean` (default = `true`) | [Paraswap](https://1inch.exchange) price estimation. Used for all price estimations.  |
+| **0x**           | `REACT_APP_PRICE_FEED_0X_ENABLED`       | `boolean` (default = `true`) | [0x](https://0x.org/) price estimation. Used for all price estimation.                |
+
+## Metadata attached to orders (AppData)
+
+The app will attach some metadata to all orders.
+
+This metadata will be sent to the smart contract as a hexadecimal value in an order field called `AppData`. This value comes from hashing the content of a metadata JSON containing some information about the trade (using `keccak256` on the `UTF-8` bytes).
+
+The format of the JSON follows this typescript format: <src/utils/metadata.ts>
+
+To set your own `AppData`, change `REACT_APP_FULL_APP_DATA_<environment>` environment variable. For more details, check out the environment file (<.env>)
+
+## Orderbook API Endpoints
+
+Fee quote requests and posting orders are sent to the Orderbook API. This API has the responsibility of collecting orders and
 handing them to the solvers.
 
 The reference implementation of the API is [gp-v2-services](https://github.com/cowprotocol/services).
 
-The API endpoint is configured using the environment variable ` {XDAI|GOERLI|MAINNET}` to e.g. `"http://localhost:8080/api"` when running the services locally.
+The API endpoint is configured using the environment variable `REACT_APP_ORDER_BOOK_URLS`.
 
-### Wallet Connect bridge
+Normally, you don't need to change this variable, as it has a default value, but it can be handy to test your own API.
 
-Wallet Connect allows to connect the app to any [Wallet Connect supported wallet](https://walletconnect.org/wallets).
+```ini
+REACT_APP_ORDER_BOOK_URLS='{"1":"https://api.cow.fi/mainnet","100":"https://api.cow.fi/xdai","5":"https://api.cow.fi/mainnet"}'
+```
 
-In order to do so, it uses a Websocket, that can be configured using: the env var `WALLET_CONNECT_BRIDGE`.
-
-## Sitemap
-
-The sitemap can be found in <./public/sitemap.xml>
-
-To update its content:
-
-1. Edit the list of pages in <./src/sitemap.js>
-2. Run `yarn sitemap`
-3. Commit the changes to git
-
-## Service worker
-
-In case of problems with the service worker cache you force a reset using [emergency.js](apps/cowswap-frontend/public/emergency.js)
-The plan:
-
-1. `const resetCacheInCaseOfEmergency = false` - change `false` to `true`
-2. Deploy a new version to production
-
-`emergency.js` is not cached by browser and loaded before all.
-
-## Wallet Connect
+# Wallet Connect
 
 The app uses a Wallet Connect v1 bridge.
 
@@ -207,9 +180,24 @@ You can define your own bridge by setting the following environment variable:
 REACT_APP_WALLET_CONNECT_V1_BRIDGE='https://bridge.walletconnect.org'
 ```
 
-## Documentation
+## Wallet Connect bridge
+
+Wallet Connect allows to connect the app to any [Wallet Connect supported wallet](https://walletconnect.org/wallets).
+
+In order to do so, it uses a Websocket, that can be configured using: the env var `WALLET_CONNECT_BRIDGE`.
+
+# Service worker
+
+In case of problems with the service worker cache you force a reset using [emergency.js](apps/cowswap-frontend/public/emergency.js)
+The plan:
+
+1. `const resetCacheInCaseOfEmergency = false` - change `false` to `true`
+2. Deploy a new version to production
+
+`emergency.js` is not cached by browser and loaded before all.
+
+# Technical Documentation
 
 1. [Oveall Architecture](docs/architecture-overview.md)
 2. [Amounts formatting](apps/cowswap-frontend/src/utils/amountFormat/README.md)
 3. [ABIs](libs/abis/README.md)
-````
