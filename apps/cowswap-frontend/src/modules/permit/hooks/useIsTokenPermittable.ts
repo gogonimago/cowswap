@@ -2,6 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { checkIsTokenPermittable, IsTokenPermittableResult } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
@@ -14,8 +15,6 @@ import { useIsPermitEnabled } from 'common/hooks/featureFlags/useIsPermitEnabled
 
 import { ORDER_TYPE_SUPPORTS_PERMIT } from '../const'
 import { addPermitInfoForTokenAtom, permittableTokensAtom } from '../state/permittableTokensAtom'
-import { IsTokenPermittableResult } from '../types'
-import { checkIsTokenPermittable } from '../utils/checkIsTokenPermittable'
 
 /**
  * Checks whether the token is permittable, and caches the result on localStorage
